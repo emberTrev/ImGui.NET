@@ -947,5 +947,15 @@ namespace ImGuiNET
         {
             ImGuiNative.ImGuiIO_SetKeyEventNativeData((ImGuiIO*)(NativePtr), key, native_keycode, native_scancode, native_legacy_index);
         }
-    }
+        public void SetIniFilename(string str)
+		{
+            System.Diagnostics.Debug.Assert(str != null);
+			var byteCount = Encoding.UTF8.GetByteCount(str);
+			var heapBytes = Util.Allocate(byteCount + 1);
+			var bytesWritten = Util.GetUtf8(str, heapBytes, byteCount);
+			heapBytes[bytesWritten] = 0;
+			NativePtr->IniFilename = heapBytes;
+		}
+        public void FreeIniFilenameMemory() => Util.Free(NativePtr->IniFilename);
+	}
 }
